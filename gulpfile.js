@@ -23,15 +23,14 @@ async function allBrowsers () {
 }
 
 let compressHTML = () => {
-    return src([`dev/**/*.html`,`dev/**/*.html`])
+    return src([`dev/*.html`])
         .pipe(htmlCompressor({collapseWhitespace: true}))
         .pipe(dest(`prod`));
 };
 
 let validateHTML = () => {
     return src([
-        `dev/html/*.html`,
-        `dev/html/**/*.html`])
+        `dev/*.html`])
         .pipe(htmlValidator());
 };
 
@@ -109,6 +108,27 @@ let serve = () => {
 
 };
 
+async function clean() {
+    let fs = require(`fs`),
+        i,
+        foldersToDelete = [`./temp`, `prod`];
+
+    for (i = 0; i < foldersToDelete.length; i++) {
+        try {
+            fs.accessSync(foldersToDelete[i], fs.F_OK);
+            process.stdout.write(`\n\tThe ` + foldersToDelete[i] +
+                ` directory was found and will be deleted.\n`);
+            del(foldersToDelete[i]);
+        } catch (e) {
+            process.stdout.write(`\n\tThe ` + foldersToDelete[i] +
+                ` directory does NOT exist or is NOT accessible.\n`);
+        }
+    }
+
+    process.stdout.write(`\n`);
+}
+
+exports.clean = clean;
 exports.firefox = series(firefox, serve);
 exports.chrome = series(chrome, serve);
 exports.allBrowsers = series(allBrowsers, serve);
@@ -116,3 +136,9 @@ exports.compressHTML = compressHTML;
 exports.validateHTML = validateHTML;
 exports.lintCSS = lintCSS;
 exports.lintJS = lintJS;
+exports.build = series(
+    compressHTML,
+    compileCSSForProd,
+    transpileJSForProd
+);
+exports.serve = series(compileCSSForDev, lintJS, transpileJSForDev, validateHTML, serve);
