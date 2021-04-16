@@ -1,12 +1,12 @@
-let CookingAmount = prompt("How much rice do you want to cook?", "0.00");
-
-let number = parseFloat(CookingAmount);
-let whiteRiceAmount = CookingAmount;
-let whiteRiceWater = whiteRiceAmount * 2;
 let sproutRiceAmount = CookingAmount;
 let sproutRiceWater = sproutRiceAmount * 1.6;
 
 function WhiteRice() {
+
+  let CookingAmountWhite = prompt("How much white rice do you want to cook?", "0.00");
+  let whiteRiceAmount = CookingAmountWhite;
+  let whiteRiceWater = whiteRiceAmount * 2;
+
   document.getElementById("WhiteRice").style.width = "550px";
   document.getElementById("WhiteRice").style.marginLeft = "500px";
   document.getElementById("WhiteRice").style.textAlign = "center";
@@ -17,6 +17,11 @@ function WhiteRice() {
 }
 
 function SproutRice() {
+
+  let CookingAmountSprout = prompt("How much sprout rice do you want to cook?", "0.00");
+  let sproutRiceAmount = CookingAmountSprout;
+  let sproutRiceWater = sproutRiceAmount * 1.6;
+
   document.getElementById("SproutRice").style.width = "550px";
   document.getElementById("SproutRice").style.marginLeft = "500px";
   document.getElementById("SproutRice").style.textAlign = "center";
