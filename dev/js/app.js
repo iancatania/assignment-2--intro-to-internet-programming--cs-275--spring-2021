@@ -3,7 +3,6 @@ let CookingAmount = prompt("How much rice do you want to cook?", "0.00");
 let number = parseFloat(CookingAmount);
 let whiteRiceAmount = CookingAmount;
 let whiteRiceWater = whiteRiceAmount * 2;
-
 let sproutRiceAmount = CookingAmount;
 let sproutRiceWater = sproutRiceAmount * 1.6;
 
