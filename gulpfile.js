@@ -1,4 +1,5 @@
 const { src, dest, series, watch } = require(`gulp`);
+const sass = require(`gulp-sass`);
 const babel = require(`gulp-babel`);
 const htmlCompressor = require(`gulp-htmlmin`);
 const htmlValidator = require(`gulp-html`);
@@ -6,6 +7,7 @@ const cssLinter = require(`gulp-stylelint`);
 const jsLinter = require(`gulp-eslint`);
 const jsCompressor = require(`gulp-uglify`);
 const browserSync = require(`browser-sync`);
+const reload = browserSync.reload;
 
 async function firefox () {
     browserChoice = `firefox`;
@@ -23,14 +25,15 @@ async function allBrowsers () {
 }
 
 let compressHTML = () => {
-    return src([`dev/*.html`])
+    return src([`dev/**.html`])
         .pipe(htmlCompressor({collapseWhitespace: true}))
         .pipe(dest(`prod`));
 };
 
 let validateHTML = () => {
     return src([
-        `dev/*.html`])
+        `dev/html/*.html`,
+        `dev/html/**/*.html`])
         .pipe(htmlValidator());
 };
 
@@ -44,28 +47,13 @@ let lintCSS = () => {
         }));
 };
 
-let compileCSSForDev = () => {
-    return src(`dev/styles/main.scss`)
-        .pipe(sass({
-            outputStyle: `expanded`,
-            precision: 10
-        }).on(`error`, sass.logError))
-        .pipe(dest(`temp/styles`));
-};
-
 let compileCSSForProd = () => {
-    return src(`dev/styles/main.scss`)
+    return src(`dev/css/main.scss`)
         .pipe(sass({
             outputStyle: `compressed`,
             precision: 10
         }).on(`error`, sass.logError))
         .pipe(dest(`prod/styles`));
-};
-
-let transpileJSForDev = () => {
-    return src(`dev/scripts/*.js`)
-        .pipe(babel())
-        .pipe(dest(`temp/scripts`));
 };
 
 let transpileJSForProd = () => {
@@ -74,7 +62,6 @@ let transpileJSForProd = () => {
         .pipe(jsCompressor())
         .pipe(dest(`prod/scripts`));
 };
-
 
 let lintJS = () => {
     return src(`dev/scripts/*.js`)
@@ -158,4 +145,4 @@ exports.build = series(
     compileCSSForProd,
     transpileJSForProd
 );
-exports.serve = series(compileCSSForDev, lintJS, transpileJSForDev, validateHTML, serve);
+exports.serve = series(lintJS, validateHTML, serve);
