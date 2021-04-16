@@ -44,6 +44,15 @@ let lintCSS = () => {
         }));
 };
 
+let compileCSSForDev = () => {
+    return src(`dev/styles/main.scss`)
+        .pipe(sass({
+            outputStyle: `expanded`,
+            precision: 10
+        }).on(`error`, sass.logError))
+        .pipe(dest(`temp/styles`));
+};
+
 let compileCSSForProd = () => {
     return src(`dev/styles/main.scss`)
         .pipe(sass({
@@ -58,6 +67,14 @@ let transpileJSForDev = () => {
         .pipe(babel())
         .pipe(dest(`temp/scripts`));
 };
+
+let transpileJSForProd = () => {
+    return src(`dev/scripts/*.js`)
+        .pipe(babel())
+        .pipe(jsCompressor())
+        .pipe(dest(`prod/scripts`));
+};
+
 
 let lintJS = () => {
     return src(`dev/scripts/*.js`)
